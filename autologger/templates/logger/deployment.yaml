@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "auto-logger-helm.fullname" . }}
+  labels:
+    {{- include "auto-logger-helm.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.autologgerServiceAndDeployment.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "auto-logger-helm.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "auto-logger-helm.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.autologgerServiceAndDeployment.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "auto-logger-helm.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.autologgerServiceAndDeployment.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.autologgerServiceAndDeployment.securityContext | nindent 12 }}
+          image: "{{ .Values.autologgerServiceAndDeployment.image.repository }}:latest"
+          imagePullPolicy: {{ .Values.autologgerServiceAndDeployment.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /node-health-check
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /node-health-check
+              port: 8080
+          resources:
+            {{- toYaml .Values.autologgerServiceAndDeployment.resources | nindent 12 }}
+    {{- with .Values.autologgerServiceAndDeployment.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.autologgerServiceAndDeployment.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.autologgerServiceAndDeployment.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

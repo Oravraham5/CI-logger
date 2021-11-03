@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+        </layout>
+    </appender>
+
+    <if condition='property("graylog").equals("true")'>
+        <then>
+            <appender name="GELF" class="de.siegmar.logbackgelf.GelfUdpAppender">
+                <graylogHost>graylog-production.service.inneractive.consul</graylogHost>
+                <graylogPort>12201</graylogPort>
+            </appender>
+        </then>
+    </if>
+
+
+    <logger name="io.netty" level="WARN"/>
+    <logger name="com.mchange" level="WARN"/>
+<!--    <logger name="io.netty.handler.logging.LoggingHandler" level="DEBUG"/>-->
+<!--    <logger name="com.fyber.mobile.exchange.forest.mocks.db" level="TRACE"/>-->
+
+
+    <root level="debug">
+        <appender-ref ref="STDOUT" />
+        <if condition='property("graylog").equals("true")'>
+            <then>
+                <appender-ref ref="GELF" />
+            </then>
+        </if>
+    </root>
+
+
+
+</configuration>

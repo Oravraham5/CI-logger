@@ -1,0 +1,52 @@
+buildscript {
+    repositories {
+        jcenter();
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:5.0.0'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'kotlin'
+
+
+group 'com.fyber.mobile'
+version '0.1'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+def vertxVersion = "3.7.0"
+
+dependencies {
+    implementation "io.vertx:vertx-core:${vertxVersion}"
+    implementation "io.vertx:vertx-web:${vertxVersion}"
+    implementation "io.vertx:vertx-health-check:${vertxVersion}"
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+    implementation 'io.github.microutils:kotlin-logging:1.7.7'
+    implementation 'org.slf4j:jcl-over-slf4j:1.7.30'
+    implementation 'org.slf4j:log4j-over-slf4j:1.7.30'
+    implementation 'org.slf4j:jul-to-slf4j:1.7.30'
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'kotlin'
+
+shadowJar {
+    classifier = 'fat'
+}

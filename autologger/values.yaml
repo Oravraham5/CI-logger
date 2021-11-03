@@ -1,0 +1,34 @@
+# Default values for forest-dev-helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+autologgerServiceAndDeployment:
+  replicaCount: 1
+  image:
+    repository: 931733775016.dkr.ecr.us-east-1.amazonaws.com/marketplace-sdk-automation-logger
+    pullPolicy: Always
+  imagePullSecrets:
+  - name: regcred
+  nameOverride: "logger"
+  fullnameOverride: "marketplace-sdk-automation-logger"
+  serviceAccount:
+    create: true
+    name: logger
+  podSecurityContext: {}
+  securityContext: {}
+  service:
+    type: NodePort
+    port: 8080
+  ingress:
+    enabled: false
+    annotations:
+      kubernetes.io/ingress.class: nginx
+    hosts:
+      - host: auto-logger.fmp-sdk-dev.fyber.com
+        paths:
+          path: /
+    tls: []
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
