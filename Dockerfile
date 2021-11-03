@@ -1,9 +1,9 @@
-FROM --platform=$BUILDPLATFORM openjdk:11-jdk-slim as BuilderImage
+FROM docker.io/library/openjdk:11-jdk-slim@sha256:ad41c90d47fdc84fecb3bdba2deb38e378bbde1d7f5a378ba0964c466b23dbca   
 
 ENV DEBIAN_FRONTEND="noninteractive"
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
-RUN export REALARCH=$(echo $TARGETPLATFORM | cut -d "/" -f 2);echo building for $REALARCH;
+RUN export REALARCH=$(echo linux/amd64 | cut -d "/" -f 2);echo building for $REALARCH;
 
 RUN mkdir /opt/autologger
 COPY build.gradle /opt/autologger
