@@ -1,4 +1,4 @@
-FROM docker.io/library/openjdk:11-jdk-slim@sha256:ad41c90d47fdc84fecb3bdba2deb38e378bbde1d7f5a378ba0964c466b23dbca   
+FROM docker.io/library/openjdk:11-jdk-slim@sha256:ad41c90d47fdc84fecb3bdba2deb38e378bbde1d7f5a378ba0964c466b23dbca as builderimage
 
 ENV DEBIAN_FRONTEND="noninteractive"
 ARG TARGETPLATFORM
@@ -24,7 +24,7 @@ RUN cp build/libs/a*.jar /opt/logger/app.jar
 
 FROM openjdk:11-jdk-slim as AppImage
 ENV DEBIAN_FRONTEND="noninteractive"
-COPY --from=BuilderImage /opt/logger /opt/logger
+COPY --from=builderimage /opt/logger /opt/logger
 
 EXPOSE 9000
 
